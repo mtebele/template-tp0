@@ -35,11 +35,10 @@ public class RandomGenerator {
         for (int i = 0; i < quantity; i++) {
             if (token.getTokenType() == TokenType.DOT) {
                 builder.append((char) (32 + random.nextInt(94)));
+            } else if (token.getTokenType() == TokenType.LITERAL) {
+                builder.append(token.getValue());
             }
         }
-
-        //TODO sacar
-        token.getValue();
 
         return builder.toString();
     }

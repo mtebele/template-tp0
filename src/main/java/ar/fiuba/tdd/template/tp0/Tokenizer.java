@@ -25,24 +25,31 @@ public class Tokenizer {
         for (int i = 0; i < regEx.length(); i++) {
             char charValue = regEx.charAt(i);
             builder.append(charValue);
-
-            if (RegExUtils.isGroup(charValue) || currentlyInGroup || currentlyEscaping) {
-                processGroups(charValue);
-            } else if (RegExUtils.isQuantifier(charValue)) {
-                processQuantifiers(charValue);
-            } else if (RegExUtils.isEscaped(charValue)) {
-                processEscaped();
-            } else if (RegExUtils.isDot(charValue)) {
-                processAnyChar();
-            } else {
-                processLiterals();
-            }
+            processToken(charValue);
         }
         return tokens;
     }
 
+    private void processToken(char charValue) {
+        if (currentlyEscaping) {
+            processLiterals();
+            currentlyEscaping = false;
+        } else if (RegExUtils.isGroup(charValue) || currentlyInGroup) {
+            processGroups(charValue);
+        } else if (RegExUtils.isQuantifier(charValue)) {
+            processQuantifiers(charValue);
+        } else if (RegExUtils.isEscaped(charValue)) {
+            processEscaped();
+        } else if (RegExUtils.isDot(charValue)) {
+            processAnyChar();
+        } else {
+            processLiterals();
+        }
+    }
+
     private void processEscaped() {
         currentlyEscaping = true;
+        builder.setLength(0);
     }
 
     private void processAnyChar() {
@@ -64,11 +71,10 @@ public class Tokenizer {
 
     private void processGroups(char charValue) {
         currentlyInGroup = true;
-        if (charValue == ']' || currentlyEscaping) {
+        if (charValue == ']') {
             tokens.add(new Token(builder.toString(), TokenType.GROUP));
             builder.setLength(0);
             currentlyInGroup = false;
-            currentlyEscaping = false;
         }
     }
 }

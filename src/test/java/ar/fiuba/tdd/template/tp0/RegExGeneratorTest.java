@@ -40,20 +40,20 @@ public class RegExGeneratorTest {
         assertTrue(validate("..?.*.+.", 1));
     }
 
-/*
-    @Test
-    public void testStatementExample() {
-        assertTrue(validate("..+[ab]*d?c", 1));
-    }
-
     @Test
     public void testLiteral() {
-        assertTrue(validate("\\@", 1));
+        assertTrue(validate("\\[\\.J\\]\\@z\\+\\?\\*M", 1));
     }
 
     @Test
     public void testLiteralDotCharacter() {
         assertTrue(validate("\\@..", 1));
+    }
+
+/*
+    @Test
+    public void testStatementExample() {
+        assertTrue(validate("..+[ab]*d?c", 1));
     }
 
     @Test
