@@ -5,6 +5,7 @@ package ar.fiuba.tdd.template.tp0.models;
  */
 public enum GroupType {
     BRACKET_OPEN('['), BRACKET_CLOSE(']');
+
     private final char value;
 
     GroupType(char value) {
