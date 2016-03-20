@@ -17,6 +17,12 @@ public class RegExGenerator {
 
     public List<String> generate(String regEx, int numberOfResults) {
 
+        System.out.print(System.lineSeparator());
+        System.out.print("Number of results: " + numberOfResults);
+        System.out.print(System.lineSeparator());
+        System.out.print("Regex: " + regEx);
+        System.out.print(System.lineSeparator());
+
         // TODO: chequear sintaxis de regEx.
 
         ArrayList<String> result = new ArrayList<>();
@@ -24,6 +30,8 @@ public class RegExGenerator {
         ArrayList<Token> tokens = tokenizer.tokenize(regEx);
         for (int i = 0; i < numberOfResults; i++) {
             result.add(generateString(tokens));
+            System.out.print(i + 1 + ": " + result.get(i));
+            System.out.print(System.lineSeparator());
         }
 
         return result;
