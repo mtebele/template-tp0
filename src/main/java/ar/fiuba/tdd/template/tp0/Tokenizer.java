@@ -1,23 +1,27 @@
 package ar.fiuba.tdd.template.tp0;
 
+import ar.fiuba.tdd.template.tp0.models.Quantifier;
+import ar.fiuba.tdd.template.tp0.models.Token;
+import ar.fiuba.tdd.template.tp0.models.TokenType;
+
 import java.util.ArrayList;
 
 /**
  * Created by mtebele on 19/3/16.
  */
-public class TokenGenerator {
+public class Tokenizer {
 
-    private ArrayList<String> tokens;
+    private ArrayList<Token> tokens;
     private StringBuilder builder;
     private boolean currentlyInGroup = false;
     private boolean currentlyEscaping = false;
 
-    public TokenGenerator() {
+    public Tokenizer() {
         tokens = new ArrayList<>();
         builder = new StringBuilder();
     }
 
-    public ArrayList<String> getTokens(String regEx) {
+    public ArrayList<Token> tokenize(String regEx) {
         for (int i = 0; i < regEx.length(); i++) {
             char charValue = regEx.charAt(i);
             builder.append(charValue);
@@ -27,30 +31,41 @@ public class TokenGenerator {
             } else if (RegExUtils.isQuantifier(charValue)) {
                 processQuantifiers(charValue);
             } else if (RegExUtils.isEscaped(charValue)) {
-                currentlyEscaping = true;
+                processEscaped();
+            } else if (RegExUtils.isDot(charValue)) {
+                processAnyChar();
             } else {
                 processLiterals();
             }
         }
-
         return tokens;
     }
 
+    private void processEscaped() {
+        currentlyEscaping = true;
+    }
+
+    private void processAnyChar() {
+        tokens.add(new Token(builder.toString(), TokenType.DOT));
+        builder.setLength(0);
+    }
+
     private void processLiterals() {
-        tokens.add(builder.toString());
+        tokens.add(new Token(builder.toString(), TokenType.LITERAL));
         builder.setLength(0);
     }
 
     private void processQuantifiers(char charValue) {
         // Adds quantifier to the last token
-        tokens.set(tokens.size() - 1, tokens.get(tokens.size() - 1).concat(Character.toString(charValue)));
+        Token lastToken = tokens.get(tokens.size() - 1);
+        lastToken.setQuantifier(new Quantifier(charValue));
         builder.setLength(0);
     }
 
     private void processGroups(char charValue) {
         currentlyInGroup = true;
         if (charValue == ']' || currentlyEscaping) {
-            tokens.add(builder.toString());
+            tokens.add(new Token(builder.toString(), TokenType.GROUP));
             builder.setLength(0);
             currentlyInGroup = false;
             currentlyEscaping = false;

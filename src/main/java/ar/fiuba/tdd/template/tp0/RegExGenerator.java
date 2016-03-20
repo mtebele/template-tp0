@@ -1,16 +1,18 @@
 package ar.fiuba.tdd.template.tp0;
 
+import ar.fiuba.tdd.template.tp0.models.Token;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class RegExGenerator {
     //    private static final String REGEX_PATTERN = "^(\\.|(\\[.+\\]))$";
     private RandomGenerator randomGenerator;
-    private TokenGenerator tokenGenerator;
+    private Tokenizer tokenizer;
 
     public RegExGenerator(int maxLength) {
         this.randomGenerator = new RandomGenerator(maxLength);
-        this.tokenGenerator = new TokenGenerator();
+        this.tokenizer = new Tokenizer();
     }
 
     public List<String> generate(String regEx, int numberOfResults) {
@@ -19,7 +21,7 @@ public class RegExGenerator {
 
         ArrayList<String> result = new ArrayList<>();
 
-        ArrayList<String> tokens = tokenGenerator.getTokens(regEx);
+        ArrayList<Token> tokens = tokenizer.tokenize(regEx);
         for (int i = 0; i < numberOfResults; i++) {
             result.add(generateString(tokens));
         }
@@ -27,34 +29,14 @@ public class RegExGenerator {
         return result;
     }
 
-    private String generateString(ArrayList<String> tokens) {
+    private String generateString(ArrayList<Token> tokens) {
         StringBuilder builder = new StringBuilder();
 
-        for (String token : tokens) {
-            String finalToken = token;
-            int quantify = 1;
-            char lastChar = token.charAt(token.length() - 1);
-            if (RegExUtils.isQuantifier(lastChar)) {
-                quantify = randomGenerator.getNumberFromQuantifier(lastChar);
-                finalToken = token.replaceFirst(".$", "");
-            }
-
-            builder.append(handleString(finalToken, quantify));
+        for (Token token : tokens) {
+            String generatedString = randomGenerator.generateRandomString(token);
+            builder.append(generatedString);
         }
 
-        return builder.toString();
-    }
-
-    private String handleString(String token, int quantify) {
-        StringBuilder builder = new StringBuilder();
-
-        for (int i = 0; i < token.length(); i++) {
-            char charValue = token.charAt(i);
-
-            if (charValue == '.') {
-                builder.append(randomGenerator.generateRandomString(quantify));
-            }
-        }
         return builder.toString();
     }
 }

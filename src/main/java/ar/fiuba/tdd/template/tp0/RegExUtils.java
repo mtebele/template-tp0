@@ -25,6 +25,10 @@ public class RegExUtils {
         return token == '\\';
     }
 
+    public static boolean isDot(char token) {
+        return token == '.';
+    }
+
     public enum Quantifiers {
         ZERO_TO_ONE('?'), ZERO_TO_MANY('*'), ONE_TO_MANY('+');
 

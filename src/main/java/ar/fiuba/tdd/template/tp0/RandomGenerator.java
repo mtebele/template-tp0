@@ -1,5 +1,8 @@
 package ar.fiuba.tdd.template.tp0;
 
+import ar.fiuba.tdd.template.tp0.models.Token;
+import ar.fiuba.tdd.template.tp0.models.TokenType;
+
 import java.util.Random;
 
 /**
@@ -15,21 +18,30 @@ public class RandomGenerator {
         this.maxLength = maxLength;
     }
 
-    public int getNumberFromQuantifier(char quantifier) {
-        Random random = new Random();
-        if (quantifier == RegExUtils.Quantifiers.ZERO_TO_ONE.getValue()) {
-            return random.nextInt(2);
-        } else if (quantifier == RegExUtils.Quantifiers.ZERO_TO_MANY.getValue()) {
-            return random.nextInt(maxLength + 1);
-        } else if (quantifier == RegExUtils.Quantifiers.ONE_TO_MANY.getValue()) {
-            return random.nextInt(maxLength) + 1;
-        }
-        return 0;
+    public int quantifyToken(Token token) {
+        return token.getQuantity(maxLength);
     }
 
     public char generateRandomChar() {
         Random random = new Random();
         return (char) (32 + random.nextInt(94));
+    }
+
+    public String generateRandomString(Token token) {
+        Random random = new Random();
+        StringBuilder builder = new StringBuilder();
+        int quantity = quantifyToken(token);
+
+        for (int i = 0; i < quantity; i++) {
+            if (token.getTokenType() == TokenType.DOT) {
+                builder.append((char) (32 + random.nextInt(94)));
+            }
+        }
+
+        //TODO sacar
+        token.getValue();
+
+        return builder.toString();
     }
 
     public String generateRandomString(int quantity) {
