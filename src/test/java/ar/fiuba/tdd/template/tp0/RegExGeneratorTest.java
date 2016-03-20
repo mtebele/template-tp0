@@ -11,7 +11,7 @@ import static org.junit.Assert.assertTrue;
 public class RegExGeneratorTest {
 
     private boolean validate(String regEx, int numberOfResults) {
-        RegExGenerator generator = new RegExGenerator(100);
+        RegExGenerator generator = new RegExGenerator(5);
         List<String> results = generator.generate(regEx, numberOfResults);
         // force matching the beginning and the end of the strings
         Pattern pattern = Pattern.compile("^" + regEx + "$");
@@ -30,15 +30,15 @@ public class RegExGeneratorTest {
         assertTrue(validate(".", 1));
     }
 
+    @Test
+    public void testMultipleCharacters() {
+        assertTrue(validate("...", 1));
+    }
+
 /*
     @Test
     public void testStatementExample() {
         assertTrue(validate("..+[ab]*d?c", 1));
-    }
-
-    @Test
-    public void testMultipleCharacters() {
-        assertTrue(validate("...", 1));
     }
 
     @Test

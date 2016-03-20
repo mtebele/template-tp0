@@ -7,12 +7,17 @@ import java.util.ArrayList;
  */
 public class TokenGenerator {
 
-    static ArrayList<String> tokens = new ArrayList<>();
-    static StringBuilder builder = new StringBuilder();
-    static boolean currentlyInGroup = false;
-    static boolean currentlyEscaping = false;
+    private ArrayList<String> tokens;
+    private StringBuilder builder;
+    private boolean currentlyInGroup = false;
+    private boolean currentlyEscaping = false;
 
-    public static ArrayList<String> getTokens(String regEx) {
+    public TokenGenerator() {
+        tokens = new ArrayList<>();
+        builder = new StringBuilder();
+    }
+
+    public ArrayList<String> getTokens(String regEx) {
         for (int i = 0; i < regEx.length(); i++) {
             char charValue = regEx.charAt(i);
             builder.append(charValue);
@@ -31,17 +36,17 @@ public class TokenGenerator {
         return tokens;
     }
 
-    private static void processLiterals() {
+    private void processLiterals() {
         tokens.add(builder.toString());
         builder.setLength(0);
     }
 
-    private static void processQuantifiers(char charValue) {
+    private void processQuantifiers(char charValue) {
         tokens.set(tokens.size() - 1, tokens.get(tokens.size() - 1).concat(Character.toString(charValue)));
         builder.setLength(0);
     }
 
-    private static void processGroups(char charValue) {
+    private void processGroups(char charValue) {
         currentlyInGroup = true;
         if (charValue == ']' || currentlyEscaping) {
             tokens.add(builder.toString());
