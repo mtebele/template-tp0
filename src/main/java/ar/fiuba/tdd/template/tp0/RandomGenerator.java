@@ -14,8 +14,8 @@ public class RandomGenerator {
 
     /* RULE: random.nextInt(max - min + 1) + min */
 
-    private static final int MIN_ASCII_CODE = 0; //32
-    private static final int MAX_ASCII_CODE = 255; //126
+    private static final int MIN_ASCII_CODE = 32; //0
+    private static final int MAX_ASCII_CODE = 126; //255
     private static final List<Integer> FORBIDDEN_ASCII_CODES = new ArrayList<Integer>() {
         {
             add(10);
@@ -31,10 +31,12 @@ public class RandomGenerator {
 
     private int maxLength;
     private Random random;
+    private Validator validator;
 
     public RandomGenerator(int maxLength) {
         this.maxLength = maxLength;
         this.random = new Random();
+        this.validator = new Validator();
     }
 
     public int quantifyToken(Token token) {
@@ -56,6 +58,11 @@ public class RandomGenerator {
                 builder.append(token.getValue());
             } else if (token.getTokenType() == TokenType.GROUP) {
                 List<Character> characters = RegExUtils.getListFromGroup(token.getValue());
+                validator.validateSpecialCharsInGroup(token.getValue(), characters);
+
+                String finalTokenValue = token.getValue().replaceAll("(.*)\\\\(.)(.*)", "$1$2$3");
+                characters = RegExUtils.getListFromGroup(finalTokenValue);
+
                 int index = random.nextInt(characters.size());
                 builder.append(characters.get(index));
             }

@@ -1,5 +1,6 @@
 package ar.fiuba.tdd.template.tp0;
 
+import ar.fiuba.tdd.template.tp0.exceptions.InvalidRegexException;
 import org.junit.Test;
 
 import java.util.List;
@@ -10,7 +11,8 @@ import static org.junit.Assert.assertTrue;
 
 public class RegExGeneratorTest {
 
-    private static final int MAX_LENGTH = 5;
+    private static final int MAX_LENGTH = 10;
+    private static final int NUMBER_RESULTS = 1000;
 
     private boolean validate(String regEx, int numberOfResults) {
         RegExGenerator generator = new RegExGenerator(MAX_LENGTH);
@@ -20,57 +22,60 @@ public class RegExGeneratorTest {
         return results
                 .stream()
                 .reduce(true,
-                    (acc, item) -> {
-                        Matcher matcher = pattern.matcher(item);
-                        return acc && matcher.find();
-                    },
-                    (item1, item2) -> item1 && item2);
+                        (acc, item) -> {
+                            Matcher matcher = pattern.matcher(item);
+                            return acc && matcher.find();
+                        },
+                        (item1, item2) -> item1 && item2);
     }
 
     @Test
     public void testAnyCharacter() {
-        assertTrue(validate(".", 1));
+        assertTrue(validate(".", NUMBER_RESULTS));
     }
 
     @Test
     public void testMultipleCharacters() {
-        assertTrue(validate("...", 1));
+        assertTrue(validate("...", NUMBER_RESULTS));
     }
 
     @Test
     public void testDotWithQuantifiers() {
-        assertTrue(validate("..?.*.+.", 1));
+        assertTrue(validate("..?.*.+.", NUMBER_RESULTS));
     }
 
     @Test
     public void testLiteral() {
-        assertTrue(validate("\\[\\.J\\]\\@z\\+\\?\\*M", 1));
+        assertTrue(validate("\\[\\.J\\]\\@z\\+\\?\\*M", NUMBER_RESULTS));
     }
 
     @Test
     public void testLiteralDotCharacter() {
-        assertTrue(validate("\\@..", 1));
+        assertTrue(validate("\\@..", NUMBER_RESULTS));
     }
 
     @Test
     public void testCharacterSet() {
-        assertTrue(validate("[abc]", 1));
+        assertTrue(validate("[abc]", NUMBER_RESULTS));
     }
 
     @Test
     public void testCharacterSetWithQuantifiers() {
-        assertTrue(validate("[abc]+", 1));
+        assertTrue(validate("[abc]+", NUMBER_RESULTS));
     }
 
     @Test
     public void testStatementExample() {
-        assertTrue(validate("..+[ab]*d?c", 1));
+        assertTrue(validate("..+[ab]*d?c", NUMBER_RESULTS));
     }
 
     @Test
     public void testZeroOrOneCharacter() {
-        assertTrue(validate("\\@.h?", 1));
+        assertTrue(validate("\\@.h?", NUMBER_RESULTS));
     }
 
-    // TODO: Add more tests!!!
+    @Test(expected = InvalidRegexException.class)
+    public void testShouldFailOnEmptyGroup() {
+        assertTrue(validate("[]", NUMBER_RESULTS));
+    }
 }

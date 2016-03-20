@@ -9,10 +9,12 @@ public class RegExGenerator {
     //    private static final String REGEX_PATTERN = "^(\\.|(\\[.+\\]))$";
     private RandomGenerator randomGenerator;
     private Tokenizer tokenizer;
+    private Validator validator;
 
     public RegExGenerator(int maxLength) {
         this.randomGenerator = new RandomGenerator(maxLength);
         this.tokenizer = new Tokenizer();
+        this.validator = new Validator();
     }
 
     public List<String> generate(String regEx, int numberOfResults) {
@@ -24,6 +26,7 @@ public class RegExGenerator {
         System.out.print(System.lineSeparator());
 
         // TODO: chequear sintaxis de regEx.
+        validator.validateRegEx(regEx);
 
         ArrayList<String> result = new ArrayList<>();
 

@@ -32,6 +32,7 @@ public class RegExUtils {
         String extractedGroup = token.substring(
                 token.indexOf(GroupType.BRACKET_OPEN.getValue()) + 1,
                 token.indexOf(GroupType.BRACKET_CLOSE.getValue()));
+
         return extractedGroup.chars().mapToObj(e -> (char) e).collect(Collectors.toList());
     }
 }
