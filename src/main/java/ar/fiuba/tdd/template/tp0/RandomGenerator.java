@@ -12,6 +12,9 @@ public class RandomGenerator {
 
     /* RULE: random.nextInt(max - min + 1) + min */
 
+    private static final int MIN_ASCII_CODE = 32;
+    private static final int MAX_ASCII_CODE = 126;
+
     private int maxLength;
 
     public RandomGenerator(int maxLength) {
@@ -22,11 +25,6 @@ public class RandomGenerator {
         return token.getQuantity(maxLength);
     }
 
-    public char generateRandomChar() {
-        Random random = new Random();
-        return (char) (32 + random.nextInt(94));
-    }
-
     public String generateRandomString(Token token) {
         Random random = new Random();
         StringBuilder builder = new StringBuilder();
@@ -34,20 +32,10 @@ public class RandomGenerator {
 
         for (int i = 0; i < quantity; i++) {
             if (token.getTokenType() == TokenType.DOT) {
-                builder.append((char) (32 + random.nextInt(94)));
+                builder.append((char) (MIN_ASCII_CODE + random.nextInt(MAX_ASCII_CODE - MIN_ASCII_CODE)));
             } else if (token.getTokenType() == TokenType.LITERAL) {
                 builder.append(token.getValue());
             }
-        }
-
-        return builder.toString();
-    }
-
-    public String generateRandomString(int quantity) {
-        Random random = new Random();
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < quantity; i++) {
-            builder.append((char) (32 + random.nextInt(94)));
         }
 
         return builder.toString();
