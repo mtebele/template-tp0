@@ -42,6 +42,7 @@ public class TokenGenerator {
     }
 
     private void processQuantifiers(char charValue) {
+        // Adds quantifier to the last token
         tokens.set(tokens.size() - 1, tokens.get(tokens.size() - 1).concat(Character.toString(charValue)));
         builder.setLength(0);
     }

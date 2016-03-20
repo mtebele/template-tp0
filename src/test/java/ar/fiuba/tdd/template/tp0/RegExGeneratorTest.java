@@ -35,6 +35,11 @@ public class RegExGeneratorTest {
         assertTrue(validate("...", 1));
     }
 
+    @Test
+    public void testDotWithQuantifiers() {
+        assertTrue(validate("..?.*.+.", 1));
+    }
+
 /*
     @Test
     public void testStatementExample() {

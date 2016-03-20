@@ -35,7 +35,7 @@ public class RegExGenerator {
             int quantify = 1;
             char lastChar = token.charAt(token.length() - 1);
             if (RegExUtils.isQuantifier(lastChar)) {
-                quantify = randomGenerator.getNumberFromQuantifier(token.charAt(lastChar));
+                quantify = randomGenerator.getNumberFromQuantifier(lastChar);
                 finalToken = token.replaceFirst(".$", "");
             }
 

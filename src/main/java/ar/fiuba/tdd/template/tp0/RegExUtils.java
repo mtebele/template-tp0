@@ -9,9 +9,9 @@ import java.util.List;
  */
 public class RegExUtils {
 
-    private static final List QUANTIFIERS = Collections.unmodifiableList(Arrays.asList(Quantifiers.ZERO_TO_ONE,
-            Quantifiers.ZERO_TO_MANY, Quantifiers.ONE_TO_MANY));
-    private static final List GROUPS = Collections.unmodifiableList(Arrays.asList(new Character[]{'[', ']'}));
+    private static final List QUANTIFIERS = Collections.unmodifiableList(Arrays.asList(Quantifiers.ZERO_TO_ONE.getValue(),
+            Quantifiers.ZERO_TO_MANY.getValue(), Quantifiers.ONE_TO_MANY.getValue()));
+    private static final List GROUPS = Collections.unmodifiableList(Arrays.asList('[', ']'));
 
     public static boolean isGroup(char token) {
         return GROUPS.contains(token);
