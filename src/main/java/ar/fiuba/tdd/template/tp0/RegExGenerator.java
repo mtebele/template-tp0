@@ -10,7 +10,7 @@ import java.util.List;
 
 public class RegExGenerator {
 
-    private static final boolean SHOW_LOGS = true;
+    private static final boolean SHOW_LOGS = false;
 
     private StringGenerator stringGenerator;
     private Tokenizer tokenizer;
