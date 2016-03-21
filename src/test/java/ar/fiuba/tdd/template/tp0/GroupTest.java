@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Created by mtebele on 20/3/16.
@@ -42,59 +43,9 @@ public class GroupTest {
         assertTrue(validate("[\\[]", NUMBER_RESULTS));
     }
 
-    @Test(expected = InvalidRegexException.class)
-    public void testShouldFailOnEmptyGroup() {
-        assertTrue(validate("[]", NUMBER_RESULTS));
-    }
-
-    @Test(expected = InvalidRegexException.class)
-    public void testShouldFailOnSpecialCharsInGroup2() {
-        assertTrue(validate("[[]", NUMBER_RESULTS));
-    }
-
-    @Test(expected = InvalidRegexException.class)
-    public void testShouldFailOnSpecialCharsInGroup3() {
-        assertTrue(validate("[]]", NUMBER_RESULTS));
-    }
-
-    @Test(expected = InvalidRegexException.class)
-    public void testShouldFailOnQuantifiersInGroup() {
-        assertTrue(validate("[.]", NUMBER_RESULTS));
-    }
-
-    @Test(expected = InvalidRegexException.class)
-    public void testShouldFailOnQuantifiersInGroup2() {
-        assertTrue(validate("[+]", NUMBER_RESULTS));
-    }
-
-    @Test(expected = InvalidRegexException.class)
-    public void testShouldFailOnQuantifiersInGroup3() {
-        assertTrue(validate("[*]", NUMBER_RESULTS));
-    }
-
-    @Test(expected = InvalidRegexException.class)
-    public void testShouldFailOnQuantifiersInGroup4() {
-        assertTrue(validate("[?]", NUMBER_RESULTS));
-    }
-
-    @Test(expected = InvalidRegexException.class)
-    public void testShouldFailOnQuantifiersInGroup5() {
-        assertTrue(validate("[+abc]", NUMBER_RESULTS));
-    }
-
-    @Test(expected = InvalidRegexException.class)
-    public void testShouldFailOnQuantifiersInGroup6() {
-        assertTrue(validate("[abc*]", NUMBER_RESULTS));
-    }
-
-    @Test(expected = InvalidRegexException.class)
-    public void testShouldFailOnQuantifiersInGroup7() {
-        assertTrue(validate("[abc\\+.abc]", NUMBER_RESULTS));
-    }
-
-    @Test(expected = InvalidRegexException.class)
-    public void testShouldFailOnQuantifiersInGroup8() {
-        assertTrue(validate("[abc\\?qw*e\\+]", NUMBER_RESULTS));
+    @Test
+    public void testEscapedOpenBracket() {
+        assertTrue(validate("\\[", NUMBER_RESULTS));
     }
 
     @Test
@@ -102,43 +53,62 @@ public class GroupTest {
         assertTrue(validate("[\\*]", NUMBER_RESULTS));
     }
 
-    @Test(expected = InvalidRegexException.class)
-    public void testShouldFailOnOddBrackets() {
-        assertTrue(validate("[", NUMBER_RESULTS));
-    }
-
-    @Test(expected = InvalidRegexException.class)
-    public void testShouldFailOnOddBrackets2() {
-        assertTrue(validate("]", NUMBER_RESULTS));
-    }
-
-    @Test(expected = InvalidRegexException.class)
-    public void testShouldFailOnOddBrackets3() {
-        assertTrue(validate("abc[def]]", NUMBER_RESULTS));
-    }
-
-    @Test(expected = InvalidRegexException.class)
-    public void testShouldFailOnOddBrackets4() {
-        assertTrue(validate("[abc", NUMBER_RESULTS));
-    }
-
-    @Test(expected = InvalidRegexException.class)
-    public void testShouldFailOnOddBrackets5() {
-        assertTrue(validate("abc]", NUMBER_RESULTS));
-    }
-
-    @Test(expected = InvalidRegexException.class)
-    public void testShouldFailOnOddBrackets6() {
-        assertTrue(validate("[abc\\]", NUMBER_RESULTS));
-    }
-
     @Test
     public void testOddEscapedBrackets() {
         assertTrue(validate("abc[def]\\]", NUMBER_RESULTS));
+        assertTrue(validate("[\\?\\*\\+\\\\\\.\\[\\]]*", NUMBER_RESULTS));
+    }
+
+    @Test(expected = InvalidRegexException.class)
+    public void testShouldFailOnEscapedClosedBracket() {
+        assertTrue(validate("[\\]", NUMBER_RESULTS));
+    }
+
+    @Test(expected = InvalidRegexException.class)
+    public void testShouldFailOnEmptyGroup() {
+        assertTrue(validate("[]", NUMBER_RESULTS));
     }
 
     @Test
-    public void testOddEscapedBrackets2() {
-        assertTrue(validate("[\\?\\*\\+\\\\\\.\\[\\]]*", NUMBER_RESULTS));
+    public void testShouldFailOnSpecialCharsInGroup() {
+        assertFailsWithException("[[]");
+        assertFailsWithException("[]]");
+    }
+
+    @Test
+    public void testShouldFailOnQuantifiersInGroup() {
+        assertFailsWithException("[.]");
+        assertFailsWithException("[+]");
+        assertFailsWithException("[*]");
+        assertFailsWithException("[?]");
+        assertFailsWithException("[+abc]");
+        assertFailsWithException("[abc*]");
+        assertFailsWithException("[RTY+]");
+        assertFailsWithException("[0K5?]");
+        assertFailsWithException("[mN4.]");
+        assertFailsWithException("[abc\\+.abc]");
+        assertFailsWithException("[abc\\?qw*e\\+]");
+    }
+
+    @Test
+    public void testShouldFailOnOddBrackets() {
+        assertFailsWithException("[");
+        assertFailsWithException("]");
+        assertFailsWithException("abc[def]]");
+        assertFailsWithException("[abc");
+        assertFailsWithException("abc]");
+        assertFailsWithException("[abc\\]");
+        assertFailsWithException("\\[123]");
+        assertFailsWithException("[ABC.\\]");
+        assertFailsWithException("[mjT?\\]*");
+    }
+
+    private void assertFailsWithException(String regEx) {
+        try {
+            validate(regEx, NUMBER_RESULTS);
+            fail("Should not pass " + regEx);
+        } catch (InvalidRegexException ex) {
+            assertTrue(true);
+        }
     }
 }

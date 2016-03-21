@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Created by mtebele on 20/3/16.
@@ -33,17 +34,17 @@ public class QuantifierTest {
 
     @Test
     public void testQuantifierZeroOrOne() {
-        assertTrue(validate("a?", NUMBER_RESULTS));
+        assertTrue(validate("123?", NUMBER_RESULTS));
     }
 
     @Test
     public void testQuantifierZeroToMany() {
-        assertTrue(validate("H*", NUMBER_RESULTS));
+        assertTrue(validate("456*", NUMBER_RESULTS));
     }
 
     @Test
     public void testQuantifierOneToMany() {
-        assertTrue(validate("6+", NUMBER_RESULTS));
+        assertTrue(validate("abc+", NUMBER_RESULTS));
     }
 
     @Test
@@ -51,38 +52,35 @@ public class QuantifierTest {
         assertTrue(validate("A+B?A*A+B?A*A+B?A*A+B?A*A+B?A*A+B?A*A+B?A*", NUMBER_RESULTS));
     }
 
-    @Test(expected = InvalidRegexException.class)
+    @Test
     public void testShouldFailOnStartWithQuantifier() {
-        assertTrue(validate("?", NUMBER_RESULTS));
+        assertFailsWithException("?");
+        assertFailsWithException("*");
+        assertFailsWithException("+");
+        assertFailsWithException("?a");
+        assertFailsWithException("*b");
+        assertFailsWithException("+c");
+        assertFailsWithException("?*+a");
+        assertFailsWithException("*+?b");
+        assertFailsWithException("+?*c");
     }
 
-    @Test(expected = InvalidRegexException.class)
-    public void testShouldFailOnStartWithQuantifier2() {
-        assertTrue(validate("*", NUMBER_RESULTS));
-    }
-
-    @Test(expected = InvalidRegexException.class)
-    public void testShouldFailOnStartWithQuantifier3() {
-        assertTrue(validate("+", NUMBER_RESULTS));
-    }
-
-    @Test(expected = InvalidRegexException.class)
+    @Test
     public void testShouldFailOnConsecutiveQuantifier() {
-        assertTrue(validate("abc+?", NUMBER_RESULTS));
+        assertFailsWithException("abc+?");
+        assertFailsWithException("abc*+");
+        assertFailsWithException("abc?*");
+        assertFailsWithException("[a?bc**]");
+        assertFailsWithException("[ab+c?]++");
+        assertFailsWithException("ab+c?d++");
     }
 
-    @Test(expected = InvalidRegexException.class)
-    public void testShouldFailOnConsecutiveQuantifier2() {
-        assertTrue(validate("[a?bc**]", NUMBER_RESULTS));
-    }
-
-    @Test(expected = InvalidRegexException.class)
-    public void testShouldFailOnConsecutiveQuantifier3() {
-        assertTrue(validate("[ab+c?]++", NUMBER_RESULTS));
-    }
-
-    @Test(expected = InvalidRegexException.class)
-    public void testShouldFailOnConsecutiveQuantifier4() {
-        assertTrue(validate("ab+c?d++", NUMBER_RESULTS));
+    private void assertFailsWithException(String regEx) {
+        try {
+            validate(regEx, NUMBER_RESULTS);
+            fail("Should not pass " + regEx);
+        } catch (InvalidRegexException ex) {
+            assertTrue(true);
+        }
     }
 }

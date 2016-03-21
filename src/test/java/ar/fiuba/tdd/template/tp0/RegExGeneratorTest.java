@@ -14,9 +14,19 @@ public class RegExGeneratorTest {
     private static final int MAX_LENGTH = 10;
     private static final int NUMBER_RESULTS = 1000;
 
+    private boolean validate(String regEx) {
+        RegExGenerator generator = new RegExGenerator(MAX_LENGTH);
+        List<String> results = generator.generate(regEx);
+        return validateResults(results, regEx);
+    }
+
     private boolean validate(String regEx, int numberOfResults) {
         RegExGenerator generator = new RegExGenerator(MAX_LENGTH);
         List<String> results = generator.generate(regEx, numberOfResults);
+        return validateResults(results, regEx);
+    }
+
+    private boolean validateResults(List<String> results, String regEx) {
         // force matching the beginning and the end of the strings
         Pattern pattern = Pattern.compile("^" + regEx + "$");
         return results
@@ -80,7 +90,7 @@ public class RegExGeneratorTest {
     }
 
     @Test(expected = InvalidRegexException.class)
-    public void testShouldFailOnUnescapedChar2() {
+    public void testShouldFailOnUnescapedCharOnly() {
         assertTrue(validate("\\", NUMBER_RESULTS));
     }
 
@@ -97,6 +107,11 @@ public class RegExGeneratorTest {
     @Test(expected = InvalidRegexException.class)
     public void testShouldFailOnZeroNumber() {
         assertTrue(validate("[abc]+", 0));
+    }
+
+    @Test
+    public void testGenerateWithoutNumberOfResults() {
+        assertTrue(validate("[abc]+"));
     }
 
     @Test
