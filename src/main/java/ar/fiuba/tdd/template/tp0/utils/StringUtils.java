@@ -3,6 +3,8 @@ package ar.fiuba.tdd.template.tp0.utils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by mtebele on 21/3/16.
@@ -33,4 +35,17 @@ public class StringUtils {
         return ascii;
     }
 
+    public static int getMatchesCount(String strPattern, String regEx) {
+        Pattern pattern = Pattern.compile(strPattern);
+        Matcher matcher = pattern.matcher(regEx);
+        return countMatches(matcher);
+    }
+
+    private static int countMatches(Matcher matcher) {
+        int count = 0;
+        while (matcher.find()) {
+            count++;
+        }
+        return count;
+    }
 }

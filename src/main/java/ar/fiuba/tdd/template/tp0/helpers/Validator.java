@@ -2,12 +2,11 @@ package ar.fiuba.tdd.template.tp0.helpers;
 
 import ar.fiuba.tdd.template.tp0.exceptions.InvalidRegexException;
 import ar.fiuba.tdd.template.tp0.models.Token;
+import ar.fiuba.tdd.template.tp0.utils.StringUtils;
 import ar.fiuba.tdd.template.tp0.utils.TokenUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by mtebele on 20/3/16.
@@ -25,18 +24,38 @@ public class Validator {
         validateEndingSlash(regEx);
     }
 
+    /** Validates that the regEx is not empty. */
     private void validateEmptyRegex(String regEx) {
         if (regEx == null || regEx.isEmpty()) {
             throw new InvalidRegexException("RegEx cannot be empty.");
         }
     }
 
+    /** Validates that the number of results is greater than zero. */
     private void validateEmptyNumberOfResults(int numberOfResults) {
         if (numberOfResults < 1) {
             throw new InvalidRegexException("Number of results cannot be less than one.");
         }
     }
 
+    /** Validates that the regEx has equal number of opened and closed brackets (unescaped). */
+    private void validateOddBrackets(String regEx) {
+        String openedBracketPattern = "\\[";
+        String openedEscapedBracketPattern = "\\\\\\[";
+        String closedBracketPattern = "\\]";
+        String closedEscapedBracketPattern = "\\\\]";
+
+        int openedCount = StringUtils.getMatchesCount(openedBracketPattern, regEx)
+                - StringUtils.getMatchesCount(openedEscapedBracketPattern, regEx);
+        int closedCount = StringUtils.getMatchesCount(closedBracketPattern, regEx)
+                - StringUtils.getMatchesCount(closedEscapedBracketPattern, regEx);
+
+        if (openedCount != closedCount) {
+            throw new InvalidRegexException("Opened and closed brackets doesn't match.");
+        }
+    }
+
+    /** Validates that the regEx has content inside a group. */
     private void validateEmptyGroup(String regEx) {
         int openIndex = regEx.indexOf('[');
         int closeIndex = regEx.indexOf(']');
@@ -49,46 +68,14 @@ public class Validator {
         }
     }
 
-    private void validateOddBrackets(String regEx) {
-        String openedBracketPattern = "\\[";
-        String openedEscapedBracketPattern = "\\\\\\[";
-        String closedBracketPattern = "\\]";
-        String closedEscapedBracketPattern = "\\\\]";
-
-        int openedCount = getBracketsCount(openedBracketPattern, openedEscapedBracketPattern, regEx);
-        int closedCount = getBracketsCount(closedBracketPattern, closedEscapedBracketPattern, regEx);
-
-        if (openedCount != closedCount) {
-            throw new InvalidRegexException("Opened and closed brackets doesn't match.");
-        }
-    }
-
+    /** Validates that the regEx doesn't end with a slash character. */
     private void validateEndingSlash(String regEx) {
         if (regEx.charAt(regEx.length() - 1) == '\\') {
             throw new InvalidRegexException("Unescaped character detected.");
         }
     }
 
-    private int getBracketsCount(String firstPattern, String secondPattern, String regEx) {
-        Pattern pattern = Pattern.compile(firstPattern);
-        Matcher matcher = pattern.matcher(regEx);
-        int totalCount = countMatches(matcher);
-
-        pattern = Pattern.compile(secondPattern);
-        matcher = pattern.matcher(regEx);
-        int escapedCount = countMatches(matcher);
-
-        return totalCount - escapedCount;
-    }
-
-    private int countMatches(Matcher matcher) {
-        int count = 0;
-        while (matcher.find()) {
-            count++;
-        }
-        return count;
-    }
-
+    /** Validates that the regEx has (if any) valid character inside a group. */
     public void validateSpecialCharsInGroup(Token token) {
         String tokenValue = TokenUtils.getStringFromGroup(token.getValue());
         List<Character> characters = TokenUtils.getListFromGroup(token.getValue());
@@ -103,12 +90,14 @@ public class Validator {
         }
     }
 
+    /** Validates that the regEx doesn't start with a quantifier. */
     public void validateQuantifierAtStart(ArrayList<Token> tokens) {
         if (tokens.isEmpty()) {
             throw new InvalidRegexException("RegEx cannot start with a quantifier.");
         }
     }
 
+    /** Validates that the regEx doesn't have two or more consecutive quantifiers (unescaped). */
     public void validateConsecutiveQuantifiers(ArrayList<Token> tokens) {
         Token lastToken = tokens.get(tokens.size() - 1);
         if (lastToken.hasAlreadyQuantifier()) {

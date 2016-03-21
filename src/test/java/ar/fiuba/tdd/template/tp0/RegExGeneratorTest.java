@@ -115,17 +115,13 @@ public class RegExGeneratorTest {
     }
 
     @Test
-    public void testComplexRegex2() {
+    public void testComplexRegex() {
         assertTrue(validate("\\*N?z+.?\\-*[442]", NUMBER_RESULTS));
-    }
-
-    @Test
-    public void testComplexRegex3() {
         assertTrue(validate("x\\+L*.*\\}?[hu\\]\\[9]", NUMBER_RESULTS));
-    }
-
-    @Test
-    public void testComplexRegex4() {
         assertTrue(validate("\\?\\**[G\\+\\?\\*\\\\\\]\\[,]", NUMBER_RESULTS));
+        assertTrue(validate("\\[b2+J*[xL5]?a[23]+\\+\\?5+5[MtBl92]+.+..[jiji]*", NUMBER_RESULTS));
+        assertTrue(validate("[\\[\\[qTl]?.*bN+[vos\\]]?.t.D.b+13n*", NUMBER_RESULTS));
+        assertTrue(validate("b+12*l.?[sa\\]]+\\??\\*6?\\*+mEn?[49g2SDU]*h...[woom]*.?qw*a?s\\\\\\[[r3g3x\\]]*\\."
+                + ".?y+[y34H]*", NUMBER_RESULTS));
     }
 }

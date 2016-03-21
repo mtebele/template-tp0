@@ -15,6 +15,8 @@ public class StringGenerator {
         this.randomGenerator = new RandomGenerator(maxLength);
     }
 
+    /** Generate random strings based on the tokens recieved and the quantity.
+     * Returns an ArrayList with the generated data. */
     public ArrayList<String> generateStrings(ArrayList<Token> tokens, int quantity) {
         ArrayList<String> result = new ArrayList<>();
 

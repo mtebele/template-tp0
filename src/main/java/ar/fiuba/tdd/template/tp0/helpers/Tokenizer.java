@@ -24,6 +24,7 @@ public class Tokenizer {
         this.validator = validator;
     }
 
+    /** Extract all tokens for a RegEx and returns them in a List. */
     public ArrayList<Token> tokenize(String regEx) {
         for (int i = 0; i < regEx.length(); i++) {
             char charValue = regEx.charAt(i);

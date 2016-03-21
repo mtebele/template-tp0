@@ -32,7 +32,7 @@ public class RegExGenerator {
             System.out.print(System.lineSeparator());
             System.out.print("Number of results: " + numberOfResults);
             System.out.print(System.lineSeparator());
-            System.out.print("Regex: " + regEx);
+            System.out.print("RegEx: " + regEx);
             System.out.print(System.lineSeparator());
         }
 

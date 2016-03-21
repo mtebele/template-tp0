@@ -32,17 +32,20 @@ public class TokenUtils {
         return token == '.';
     }
 
+    /** Returns the string contained in the group. */
     public static String getStringFromGroup(String token) {
         return token.substring(
                 token.indexOf(GroupType.BRACKET_OPEN.getValue()) + 1,
                 token.lastIndexOf(GroupType.BRACKET_CLOSE.getValue()));
     }
 
+    /** Returns a list of characters belonging to the string contained in the group. */
     public static List<Character> getListFromGroup(String token) {
         String extractedGroup = getStringFromGroup(token);
         return extractedGroup.chars().mapToObj(e -> (char) e).collect(Collectors.toList());
     }
 
+    /** Returns a list of special characters. */
     public static List<Character> getSpecialChars() {
         return SPECIAL_CHARS;
     }
