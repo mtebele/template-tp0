@@ -14,22 +14,13 @@ public class Token {
         this.tokenType = tokenType;
     }
 
-//    public Token(String value, Quantifier quantifier) {
-//        this.value = value;
-//        this.quantifier = quantifier;
-//    }
-
     public String getValue() {
         return value;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public boolean hasAlreadyQuantifier() {
+        return quantifier != null;
     }
-
-//    public Quantifier getQuantifier() {
-//        return quantifier;
-//    }
 
     public void setQuantifier(Quantifier quantifier) {
         this.quantifier = quantifier;
@@ -38,10 +29,6 @@ public class Token {
     public TokenType getTokenType() {
         return tokenType;
     }
-
-//    public void setTokenType(TokenType tokenType) {
-//        this.tokenType = tokenType;
-//    }
 
     public int getQuantity(int maxLength) {
         if (quantifier == null) {

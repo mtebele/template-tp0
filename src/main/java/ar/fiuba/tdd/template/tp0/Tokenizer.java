@@ -13,12 +13,14 @@ public class Tokenizer {
 
     private ArrayList<Token> tokens;
     private StringBuilder builder;
+    private Validator validator;
     private boolean currentlyInGroup = false;
     private boolean currentlyEscaping = false;
 
-    public Tokenizer() {
-        tokens = new ArrayList<>();
-        builder = new StringBuilder();
+    public Tokenizer(Validator validator) {
+        this.tokens = new ArrayList<>();
+        this.builder = new StringBuilder();
+        this.validator = validator;
     }
 
     public ArrayList<Token> tokenize(String regEx) {
@@ -32,6 +34,7 @@ public class Tokenizer {
 
     private void processToken(char charValue) {
         if (currentlyEscaping) {
+//            validator.validateNotReservedEscapedChars(charValue);
             processLiterals();
             currentlyEscaping = false;
         } else if (RegExUtils.isGroup(charValue) || currentlyInGroup) {
@@ -63,6 +66,9 @@ public class Tokenizer {
     }
 
     private void processQuantifiers(char charValue) {
+        validator.validateQuantifierAtStart(tokens);
+        validator.validateConsecutiveQuantifiers(tokens);
+
         // Adds quantifier to the last token
         Token lastToken = tokens.get(tokens.size() - 1);
         lastToken.setQuantifier(new Quantifier(charValue));

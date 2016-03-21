@@ -78,4 +78,24 @@ public class RegExGeneratorTest {
     public void testShouldFailOnEmptyGroup() {
         assertTrue(validate("[]", NUMBER_RESULTS));
     }
+
+    @Test(expected = InvalidRegexException.class)
+    public void testShouldFailOnUnescapedChar() {
+        assertTrue(validate("abc\\", NUMBER_RESULTS));
+    }
+
+    @Test(expected = InvalidRegexException.class)
+    public void testShouldFailOnUnescapedChar2() {
+        assertTrue(validate("\\", NUMBER_RESULTS));
+    }
+
+    @Test(expected = InvalidRegexException.class)
+    public void testShouldFailOnEmptyRegex() {
+        assertTrue(validate("", NUMBER_RESULTS));
+    }
+
+    @Test(expected = InvalidRegexException.class)
+    public void testShouldFailOnEmptyNumber() {
+        assertTrue(validate("[abc]+", 0));
+    }
 }

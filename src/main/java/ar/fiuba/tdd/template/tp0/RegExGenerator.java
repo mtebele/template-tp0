@@ -13,8 +13,8 @@ public class RegExGenerator {
 
     public RegExGenerator(int maxLength) {
         this.randomGenerator = new RandomGenerator(maxLength);
-        this.tokenizer = new Tokenizer();
         this.validator = new Validator();
+        this.tokenizer = new Tokenizer(this.validator);
     }
 
     public List<String> generate(String regEx, int numberOfResults) {
@@ -25,8 +25,7 @@ public class RegExGenerator {
         System.out.print("Regex: " + regEx);
         System.out.print(System.lineSeparator());
 
-        // TODO: chequear sintaxis de regEx.
-        validator.validateRegEx(regEx);
+        validator.validateRegEx(regEx, numberOfResults);
 
         ArrayList<String> result = new ArrayList<>();
 
