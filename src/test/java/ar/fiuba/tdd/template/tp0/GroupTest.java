@@ -32,19 +32,44 @@ public class GroupTest {
                         (item1, item2) -> item1 && item2);
     }
 
+    @Test
+    public void testCharsInGroup() {
+        assertTrue(validate("[abc]", NUMBER_RESULTS));
+    }
+
+    @Test
+    public void testEscapedInGroup() {
+        assertTrue(validate("[\\[]", NUMBER_RESULTS));
+    }
+
+    @Test(expected = InvalidRegexException.class)
+    public void testShouldFailOnEmptyGroup() {
+        assertTrue(validate("[]", NUMBER_RESULTS));
+    }
+
+    @Test(expected = InvalidRegexException.class)
+    public void testShouldFailOnSpecialCharsInGroup2() {
+        assertTrue(validate("[[]", NUMBER_RESULTS));
+    }
+
+    @Test(expected = InvalidRegexException.class)
+    public void testShouldFailOnSpecialCharsInGroup3() {
+        assertTrue(validate("[]]", NUMBER_RESULTS));
+    }
+
     @Test(expected = InvalidRegexException.class)
     public void testShouldFailOnQuantifiersInGroup() {
-        assertTrue(validate("[+]", NUMBER_RESULTS));
+        assertTrue(validate("[.]", NUMBER_RESULTS));
     }
 
     @Test(expected = InvalidRegexException.class)
     public void testShouldFailOnQuantifiersInGroup2() {
-        assertTrue(validate("[*]", NUMBER_RESULTS));
+        assertTrue(validate("[+]", NUMBER_RESULTS));
     }
 
     @Test(expected = InvalidRegexException.class)
     public void testShouldFailOnQuantifiersInGroup3() {
-        assertTrue(validate("[.]", NUMBER_RESULTS));
+        assertTrue(validate("[*]", NUMBER_RESULTS));
     }
 
     @Test(expected = InvalidRegexException.class)
@@ -54,37 +79,27 @@ public class GroupTest {
 
     @Test(expected = InvalidRegexException.class)
     public void testShouldFailOnQuantifiersInGroup5() {
-        assertTrue(validate("[[]", NUMBER_RESULTS));
-    }
-
-    @Test(expected = InvalidRegexException.class)
-    public void testShouldFailOnQuantifiersInGroup6() {
-        assertTrue(validate("[]]", NUMBER_RESULTS));
-    }
-
-    @Test(expected = InvalidRegexException.class)
-    public void testShouldFailOnQuantifiersInGroup7() {
         assertTrue(validate("[+abc]", NUMBER_RESULTS));
     }
 
     @Test(expected = InvalidRegexException.class)
-    public void testShouldFailOnQuantifiersInGroup8() {
+    public void testShouldFailOnQuantifiersInGroup6() {
         assertTrue(validate("[abc*]", NUMBER_RESULTS));
+    }
+
+    @Test(expected = InvalidRegexException.class)
+    public void testShouldFailOnQuantifiersInGroup7() {
+        assertTrue(validate("[abc\\+.abc]", NUMBER_RESULTS));
+    }
+
+    @Test(expected = InvalidRegexException.class)
+    public void testShouldFailOnQuantifiersInGroup8() {
+        assertTrue(validate("[abc\\?qw*e\\+]", NUMBER_RESULTS));
     }
 
     @Test
     public void testEscapedQuantifiersInGroup() {
         assertTrue(validate("[\\*]", NUMBER_RESULTS));
-    }
-
-    @Test(expected = InvalidRegexException.class)
-    public void testShouldFailOnQuantifiersInGroup10() {
-        assertTrue(validate("[abc\\+.abc]", NUMBER_RESULTS));
-    }
-
-    @Test(expected = InvalidRegexException.class)
-    public void testShouldFailOnQuantifiersInGroup11() {
-        assertTrue(validate("[abc\\?qw*e\\+]", NUMBER_RESULTS));
     }
 
     @Test(expected = InvalidRegexException.class)
@@ -102,8 +117,28 @@ public class GroupTest {
         assertTrue(validate("abc[def]]", NUMBER_RESULTS));
     }
 
+    @Test(expected = InvalidRegexException.class)
+    public void testShouldFailOnOddBrackets4() {
+        assertTrue(validate("[abc", NUMBER_RESULTS));
+    }
+
+    @Test(expected = InvalidRegexException.class)
+    public void testShouldFailOnOddBrackets5() {
+        assertTrue(validate("abc]", NUMBER_RESULTS));
+    }
+
+    @Test(expected = InvalidRegexException.class)
+    public void testShouldFailOnOddBrackets6() {
+        assertTrue(validate("[abc\\]", NUMBER_RESULTS));
+    }
+
     @Test
     public void testOddEscapedBrackets() {
         assertTrue(validate("abc[def]\\]", NUMBER_RESULTS));
+    }
+
+    @Test
+    public void testOddEscapedBrackets2() {
+        assertTrue(validate("[\\?\\*\\+\\\\\\.\\[\\]]*", NUMBER_RESULTS));
     }
 }

@@ -31,6 +31,26 @@ public class QuantifierTest {
                         (item1, item2) -> item1 && item2);
     }
 
+    @Test
+    public void testQuantifierZeroOrOne() {
+        assertTrue(validate("a?", NUMBER_RESULTS));
+    }
+
+    @Test
+    public void testQuantifierZeroToMany() {
+        assertTrue(validate("H*", NUMBER_RESULTS));
+    }
+
+    @Test
+    public void testQuantifierOneToMany() {
+        assertTrue(validate("6+", NUMBER_RESULTS));
+    }
+
+    @Test
+    public void testLotOfQuantifiers() {
+        assertTrue(validate("A+B?A*A+B?A*A+B?A*A+B?A*A+B?A*A+B?A*A+B?A*", NUMBER_RESULTS));
+    }
+
     @Test(expected = InvalidRegexException.class)
     public void testShouldFailOnStartWithQuantifier() {
         assertTrue(validate("?", NUMBER_RESULTS));

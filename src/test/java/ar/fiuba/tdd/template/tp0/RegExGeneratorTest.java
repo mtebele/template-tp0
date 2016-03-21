@@ -75,11 +75,6 @@ public class RegExGeneratorTest {
     }
 
     @Test(expected = InvalidRegexException.class)
-    public void testShouldFailOnEmptyGroup() {
-        assertTrue(validate("[]", NUMBER_RESULTS));
-    }
-
-    @Test(expected = InvalidRegexException.class)
     public void testShouldFailOnUnescapedChar() {
         assertTrue(validate("abc\\", NUMBER_RESULTS));
     }
@@ -95,7 +90,27 @@ public class RegExGeneratorTest {
     }
 
     @Test(expected = InvalidRegexException.class)
-    public void testShouldFailOnEmptyNumber() {
+    public void testShouldFailOnNullRegex() {
+        assertTrue(validate(null, NUMBER_RESULTS));
+    }
+
+    @Test(expected = InvalidRegexException.class)
+    public void testShouldFailOnZeroNumber() {
         assertTrue(validate("[abc]+", 0));
+    }
+
+    @Test
+    public void testComplexRegex2() {
+        assertTrue(validate("\\*N?z+.?\\-*[442]", NUMBER_RESULTS));
+    }
+
+    @Test
+    public void testComplexRegex3() {
+        assertTrue(validate("x\\+L*.*\\}?[hu\\]\\[9]", NUMBER_RESULTS));
+    }
+
+    @Test
+    public void testComplexRegex4() {
+        assertTrue(validate("\\?\\**[G\\+\\?\\*\\\\\\]\\[,]", NUMBER_RESULTS));
     }
 }

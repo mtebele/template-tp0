@@ -1,7 +1,8 @@
-package ar.fiuba.tdd.template.tp0;
+package ar.fiuba.tdd.template.tp0.helpers;
 
 import ar.fiuba.tdd.template.tp0.exceptions.InvalidRegexException;
 import ar.fiuba.tdd.template.tp0.models.Token;
+import ar.fiuba.tdd.template.tp0.utils.TokenUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,17 +14,14 @@ import java.util.regex.Pattern;
  */
 public class Validator {
 
-    private static final String PATTERN_START = "^";
-    private static final String PATTERN_END = "$";
-
     public Validator() {
     }
 
     public void validateRegEx(String regEx, int numberOfResults) {
         validateEmptyRegex(regEx);
         validateEmptyNumberOfResults(numberOfResults);
-        validateEmptyGroup(regEx);
         validateOddBrackets(regEx);
+        validateEmptyGroup(regEx);
         validateEndingSlash(regEx);
     }
 
@@ -40,11 +38,14 @@ public class Validator {
     }
 
     private void validateEmptyGroup(String regEx) {
-        String emptyGroupPattern = ".*\\[\\].*";
-        Pattern pattern = Pattern.compile(PATTERN_START + emptyGroupPattern + PATTERN_END);
-        Matcher matcher = pattern.matcher(regEx);
-        if (matcher.find()) {
-            throw new InvalidRegexException("A group cannot be empty.");
+        int openIndex = regEx.indexOf('[');
+        int closeIndex = regEx.indexOf(']');
+        while (openIndex >= 0 && closeIndex >= 0) {
+            if (closeIndex - openIndex == 1) {
+                throw new InvalidRegexException("A group cannot be empty.");
+            }
+            openIndex = regEx.indexOf('[', openIndex + 1);
+            closeIndex = regEx.indexOf(']', closeIndex + 1);
         }
     }
 
@@ -88,22 +89,19 @@ public class Validator {
         return count;
     }
 
-    public void validateSpecialCharsInGroup(String token, List<Character> characters) {
-        for (char specialChar : RegExUtils.getSpecialChars()) {
+    public void validateSpecialCharsInGroup(Token token) {
+        String tokenValue = TokenUtils.getStringFromGroup(token.getValue());
+        List<Character> characters = TokenUtils.getListFromGroup(token.getValue());
+
+        for (char specialChar : TokenUtils.getSpecialChars()) {
             if (characters.contains(specialChar)) {
-                int index = token.indexOf(specialChar);
-                if (index == 0 || token.charAt(index - 1) != '\\') {
+                int index = tokenValue.indexOf(specialChar);
+                if (index == 0 || tokenValue.charAt(index - 1) != '\\') {
                     throw new InvalidRegexException("Special characters in group must be escaped.");
                 }
             }
         }
     }
-
-//    public void validateNotReservedEscapedChars(char charValue) {
-//        if (!RegExUtils.getSpecialChars().contains(charValue)) {
-//            throw new InvalidRegexException("Not special character has been escaped.");
-//        }
-//    }
 
     public void validateQuantifierAtStart(ArrayList<Token> tokens) {
         if (tokens.isEmpty()) {

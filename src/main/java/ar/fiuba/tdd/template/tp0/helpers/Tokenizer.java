@@ -1,8 +1,9 @@
-package ar.fiuba.tdd.template.tp0;
+package ar.fiuba.tdd.template.tp0.helpers;
 
 import ar.fiuba.tdd.template.tp0.models.Quantifier;
 import ar.fiuba.tdd.template.tp0.models.Token;
 import ar.fiuba.tdd.template.tp0.models.TokenType;
+import ar.fiuba.tdd.template.tp0.utils.TokenUtils;
 
 import java.util.ArrayList;
 
@@ -34,16 +35,15 @@ public class Tokenizer {
 
     private void processToken(char charValue) {
         if (currentlyEscaping) {
-//            validator.validateNotReservedEscapedChars(charValue);
             processLiterals();
             currentlyEscaping = false;
-        } else if (RegExUtils.isGroup(charValue) || currentlyInGroup) {
+        } else if (TokenUtils.isGroup(charValue) || currentlyInGroup) {
             processGroups(charValue);
-        } else if (RegExUtils.isQuantifier(charValue)) {
+        } else if (TokenUtils.isQuantifier(charValue)) {
             processQuantifiers(charValue);
-        } else if (RegExUtils.isEscaped(charValue)) {
+        } else if (TokenUtils.isEscaped(charValue)) {
             processEscaped();
-        } else if (RegExUtils.isDot(charValue)) {
+        } else if (TokenUtils.isDot(charValue)) {
             processAnyChar();
         } else {
             processLiterals();
@@ -77,7 +77,7 @@ public class Tokenizer {
 
     private void processGroups(char charValue) {
         currentlyInGroup = true;
-        if (charValue == ']') {
+        if (charValue == ']' && !TokenUtils.isEscaped(builder.charAt(builder.length() - 2))) {
             tokens.add(new Token(builder.toString(), TokenType.GROUP));
             builder.setLength(0);
             currentlyInGroup = false;

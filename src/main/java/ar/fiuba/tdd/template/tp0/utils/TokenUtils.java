@@ -1,4 +1,4 @@
-package ar.fiuba.tdd.template.tp0;
+package ar.fiuba.tdd.template.tp0.utils;
 
 import ar.fiuba.tdd.template.tp0.models.GroupType;
 import ar.fiuba.tdd.template.tp0.models.QuantifierType;
@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 /**
  * Created by mtebele on 19/3/16.
  */
-public class RegExUtils {
+public class TokenUtils {
 
     private static final List<Character> SPECIAL_CHARS = Collections.unmodifiableList(Arrays.asList('.', '[', ']', '?',
             '*', '+'));
@@ -32,11 +32,14 @@ public class RegExUtils {
         return token == '.';
     }
 
-    public static List<Character> getListFromGroup(String token) {
-        String extractedGroup = token.substring(
+    public static String getStringFromGroup(String token) {
+        return token.substring(
                 token.indexOf(GroupType.BRACKET_OPEN.getValue()) + 1,
-                token.indexOf(GroupType.BRACKET_CLOSE.getValue()));
+                token.lastIndexOf(GroupType.BRACKET_CLOSE.getValue()));
+    }
 
+    public static List<Character> getListFromGroup(String token) {
+        String extractedGroup = getStringFromGroup(token);
         return extractedGroup.chars().mapToObj(e -> (char) e).collect(Collectors.toList());
     }
 

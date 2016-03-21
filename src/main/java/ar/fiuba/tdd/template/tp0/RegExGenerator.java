@@ -1,12 +1,15 @@
 package ar.fiuba.tdd.template.tp0;
 
+import ar.fiuba.tdd.template.tp0.generators.RandomGenerator;
+import ar.fiuba.tdd.template.tp0.helpers.Tokenizer;
+import ar.fiuba.tdd.template.tp0.helpers.Validator;
 import ar.fiuba.tdd.template.tp0.models.Token;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RegExGenerator {
-    //    private static final String REGEX_PATTERN = "^(\\.|(\\[.+\\]))$";
+
     private RandomGenerator randomGenerator;
     private Tokenizer tokenizer;
     private Validator validator;
