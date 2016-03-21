@@ -57,17 +57,20 @@ public class RandomGenerator {
             } else if (token.getTokenType() == TokenType.LITERAL) {
                 builder.append(token.getValue());
             } else if (token.getTokenType() == TokenType.GROUP) {
-                List<Character> characters = RegExUtils.getListFromGroup(token.getValue());
-                validator.validateSpecialCharsInGroup(token.getValue(), characters);
-
-                String finalTokenValue = token.getValue().replaceAll("(.*)\\\\(.)(.*)", "$1$2$3");
-                characters = RegExUtils.getListFromGroup(finalTokenValue);
-
+                List<Character> characters = getCharactersFromGroup(token);
                 int index = random.nextInt(characters.size());
                 builder.append(characters.get(index));
             }
         }
 
         return builder.toString();
+    }
+
+    private List<Character> getCharactersFromGroup(Token token) {
+        List<Character> characters = RegExUtils.getListFromGroup(token.getValue());
+        validator.validateSpecialCharsInGroup(token.getValue(), characters);
+
+        String finalTokenValue = token.getValue().replaceAll("(.*)\\\\(.)(.*)", "$1$2$3");
+        return RegExUtils.getListFromGroup(finalTokenValue);
     }
 }
