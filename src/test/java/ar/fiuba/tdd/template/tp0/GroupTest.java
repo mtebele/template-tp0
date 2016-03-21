@@ -73,7 +73,7 @@ public class GroupTest {
     }
 
     @Test
-    public void testShouldPassOnQuantifiersInGroup9() {
+    public void testEscapedQuantifiersInGroup() {
         assertTrue(validate("[\\*]", NUMBER_RESULTS));
     }
 
@@ -85,5 +85,25 @@ public class GroupTest {
     @Test(expected = InvalidRegexException.class)
     public void testShouldFailOnQuantifiersInGroup11() {
         assertTrue(validate("[abc\\?qw*e\\+]", NUMBER_RESULTS));
+    }
+
+    @Test(expected = InvalidRegexException.class)
+    public void testShouldFailOnOddBrackets() {
+        assertTrue(validate("[", NUMBER_RESULTS));
+    }
+
+    @Test(expected = InvalidRegexException.class)
+    public void testShouldFailOnOddBrackets2() {
+        assertTrue(validate("]", NUMBER_RESULTS));
+    }
+
+    @Test(expected = InvalidRegexException.class)
+    public void testShouldFailOnOddBrackets3() {
+        assertTrue(validate("abc[def]]", NUMBER_RESULTS));
+    }
+
+    @Test
+    public void testOddEscapedBrackets() {
+        assertTrue(validate("abc[def]\\]", NUMBER_RESULTS));
     }
 }

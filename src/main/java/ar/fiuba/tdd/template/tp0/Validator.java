@@ -24,6 +24,7 @@ public class Validator {
 
     public void validateRegEx(String regEx) {
         validateEmptyGroup(regEx);
+        validateOddBrackets(regEx);
     }
 
     private void validateEmptyGroup(String regEx) {
@@ -33,6 +34,46 @@ public class Validator {
         if (matcher.find()) {
             throw new InvalidRegexException("A group cannot be empty.");
         }
+    }
+
+    private void validateOddBrackets(String regEx) {
+        String openedBracketPattern = "\\[";
+        String openedLiteralBracketPattern = "\\\\\\[";
+
+        String closedBracketPattern = "\\]";
+        String closedLiteralBracketPattern = "\\\\]";
+
+        Pattern pattern = Pattern.compile(openedBracketPattern);
+        Matcher matcher = pattern.matcher(regEx);
+        int totalOpenedCount = countMatches(matcher);
+
+        pattern = Pattern.compile(openedLiteralBracketPattern);
+        matcher = pattern.matcher(regEx);
+        int literalOpenedCount = countMatches(matcher);
+
+        int openedCount = totalOpenedCount - literalOpenedCount;
+
+        pattern = Pattern.compile(closedBracketPattern);
+        matcher = pattern.matcher(regEx);
+        int totalClosedCount = countMatches(matcher);
+
+        pattern = Pattern.compile(closedLiteralBracketPattern);
+        matcher = pattern.matcher(regEx);
+        int literalClosedCount = countMatches(matcher);
+
+        int closedCount = totalClosedCount - literalClosedCount;
+
+        if (openedCount != closedCount) {
+            throw new InvalidRegexException("Opened and closed brackets doesn't match.");
+        }
+    }
+
+    private int countMatches(Matcher matcher) {
+        int count = 0;
+        while (matcher.find()) {
+            count++;
+        }
+        return count;
     }
 
     public void validateSpecialCharsInGroup(String token, List<Character> characters) {
